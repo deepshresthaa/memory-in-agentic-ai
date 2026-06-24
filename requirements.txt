@@ -1,0 +1,5 @@
+mem0ai 
+google-genai
+qdrant-client
+python-dotenv
+groq
