@@ -3,3 +3,6 @@ google-genai
 qdrant-client
 python-dotenv
 groq
+langchain
+langchain-groq
+streamlit
