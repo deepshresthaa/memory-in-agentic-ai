@@ -1,2 +1,5 @@
 .env
 .venv
+.mem0
+__pycache__
+qdrant_data/

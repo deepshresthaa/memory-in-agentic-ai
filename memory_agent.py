@@ -105,20 +105,25 @@ def _close_memory() -> None:
 atexit.register(_close_memory)
 
 
-
 def chat(user_id: str, user_message: str) -> str:
     """Fetch relevant memories, call the LLM, then persist the exchange."""
     if MEMORY is None:
         return f"Setup error: could not initialize Mem0. {MEMORY_INIT_ERROR}"
 
     try:
-        search_results = MEMORY.search(query=user_message, user_id=user_id, limit=5)
+        search_results = MEMORY.search(
+            query=user_message,
+            filters={"user_id": user_id},
+            limit=5,
+        )
+
         reply = CHAIN.invoke(
             {
                 "memories": _format_memories(search_results),
                 "question": user_message,
             }
         )
+
         MEMORY.add(
             [
                 {"role": "user", "content": user_message},
@@ -126,7 +131,9 @@ def chat(user_id: str, user_message: str) -> str:
             ],
             user_id=user_id,
         )
+
         return reply
+
     except Exception as exc:
         return f"Setup error: {exc}"
 
@@ -136,6 +143,9 @@ def get_all_memories(user_id: str):
         return {"error": str(MEMORY_INIT_ERROR), "results": []}
 
     try:
-        return MEMORY.get_all(user_id=user_id)
+        return MEMORY.get_all(
+            filters={"user_id": user_id}
+        )
+
     except Exception as exc:
         return {"error": str(exc), "results": []}
